@@ -1,15 +1,24 @@
 # coding=utf-8
-import json
+import configparser
 from ibm_watson import LanguageTranslatorV3
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+import json
 
-authenticator = IAMAuthenticator(X6fgB87gZnEP3xp9TzEc_1QjQ9SOj48jqWX4pfZvdxLw)
+# Load the API key from a configuration file
+config = configparser.ConfigParser()
+config.read('config.ini')
+api_key = config.get('ibm', 'api_key')
+
+# Create an authenticator object with the API key
+authenticator = IAMAuthenticator(api_key)
+
+# Create a LanguageTranslatorV3 object with the authenticator and service URL
 language_translator = LanguageTranslatorV3(
     version='2018-05-01',
     authenticator=authenticator)
-language_translator.set_service_url('https://api.us-south.language-translator.watson.cloud.ibm.com')
+language_translator.set_service_url('https://api.au-syd.language-translator.watson.cloud.ibm.com/instances/dc74c055-0741-44f4-9ca4-8fde68fc5703')
 
-## Translate
+# Translate a text using the Language Translator service
 translation = language_translator.translate(
     text='Hello', model_id='en-es').get_result()
 print(json.dumps(translation, indent=2, ensure_ascii=False))
